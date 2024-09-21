@@ -1,0 +1,70 @@
+name: Create Repo for RustDesk latest
+
+on:
+  schedule:
+    # Every Saturday at 3AM UTC
+    - cron: "0 3 * * 6"
+  workflow_dispatch:
+
+
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+  
+env:
+    REPO_NAME: xlion-rustdesk-latest-apt-repo
+    CODENAME: main
+    COMPONENTS: main
+    ARCHITECTURES: amd64 arm64 armhf
+    # armhf is ARMv7 (32bit) 
+  
+jobs:
+    build:
+      runs-on: ubuntu-latest
+      outputs:
+        artifact_id: ${{ steps.upload-artifact.outputs.artifact-id }}
+        keyring: ${{ steps.create-apt-repo.outputs.keyring }}
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+        - name: Setup Pages
+          uses: actions/configure-pages@v4
+
+        - name: Download RustDesk
+          run: |
+            bash rustdesk_latest.sh
+
+        - uses: morph027/apt-repo-action@v3.3
+          id: create-apt-repo
+          with:
+            repo-name: ${{ env.REPO_NAME }}
+            signing-key: ${{ secrets.SIGNING_KEY }}
+            codename: ${{ env.CODENAME }}
+            components: ${{ env.COMPONENTS }}
+            architectures: ${{ env.ARCHITECTURES }}
+            override: ./override # the location of the file within your repo, thats why checkout is needed before
+
+        - name: Upload Pages artifact
+          uses: actions/upload-pages-artifact@v3
+          with:
+            name: github-pages
+            path: ${{ steps.create-apt-repo.outputs.dir }}
+    deploy:
+      environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+      runs-on: ubuntu-latest
+      needs: build
+      steps:
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v4
+        - name: Adding summary
+          run: |
+            echo ':rocket:' >> $GITHUB_STEP_SUMMARY
+            echo '' >> $GITHUB_STEP_SUMMARY
+            echo '```bash' >> $GITHUB_STEP_SUMMARY
+            echo 'curl -sfLo /etc/apt.trusted.gpg.d/${{ needs.build.outputs.keyring }}.asc ${{ steps.deploy-pages.outputs.page_url }}gpg.key' >> $GITHUB_STEP_SUMMARY
+            echo 'echo "deb ${{ steps.deploy-pages.outputs.page_url }} ${{ env.CODENAME }} ${{ env.COMPONENTS }}" >/etc/apt/sources.list.d/${{ env.REPO_NAME }}.list' >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
