@@ -43,6 +43,7 @@ Types: deb
 URIs: https://xlionjuan.github.io/rustdesk-apt-repo-latest
 Suites: main
 Components: main
+# Architectures: amd64
 Signed-By: /usr/share/keyrings/xlion-repo.gpg
 EOF
 ```
@@ -53,8 +54,24 @@ EOF
 sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.list << EOF
 # Change "latest" to "nightly" if you want to switch channel
 deb [signed-by=/usr/share/keyrings/xlion-repo.gpg] https://xlionjuan.github.io/rustdesk-apt-repo-latest main main
+# deb [arch=amd64, signed-by=/usr/share/keyrings/xlion-repo.gpg] https://xlionjuan.github.io/rustdesk-apt-repo-latest main main
 EOF
 ```
 
 > [!NOTE]  
 > Deb822 style format are designed for more human readable, older style format will still supported on newer systems.
+
+## FAQ
+### I got i386 error
+
+If you got the warning like this
+```
+N: Skipping acquire of configured file 'main/binary-i386/Packages' as repository 'https://xlionjuan.github.io/rustdesk-apt-repo-latest main InRelease' doesn't support architecture 'i386'
+```
+This is because you enabled `i386`(32bit) on your apt, mainly because you're a developer or you have installed Steam 32bit library, you can ignore this, but it is annoying! Let's fix this
+
+#### Deb822
+Uncomment the line with `Architectures:`
+
+#### Older style
+Comment the line starts with `deb`, and uncomment the line that has `arch=amd64`
