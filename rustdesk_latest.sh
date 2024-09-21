@@ -33,9 +33,6 @@ echo "RUSTDESK_URL_ARM64=\"$RUSTDESK_URL_ARM64\""
 echo "RUSTDESK_URL_ARMHF=\"$RUSTDESK_URL_ARMHF\""
 echo ""
 echo "------------------DOWNLOADING-----------------"
-#wget $RUSTDESK_URL_AMD64
-#wget $RUSTDESK_URL_ARM64
-#wget $RUSTDESK_URL_ARMHF
-wget https://github.com/rustdesk/rustdesk/releases/download/1.3.0/rustdesk-1.3.0-x86_64.deb
-wget https://github.com/rustdesk/rustdesk/releases/download/1.3.0/rustdesk-1.3.0-aarch64.deb
-wget https://github.com/rustdesk/rustdesk/releases/download/1.3.0/rustdesk-1.3.0-armv7-sciter.deb
+wget $RUSTDESK_URL_AMD64
+wget $RUSTDESK_URL_ARM64
+wget $RUSTDESK_URL_ARMHF
