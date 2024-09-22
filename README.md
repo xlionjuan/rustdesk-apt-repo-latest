@@ -3,6 +3,8 @@
 > [!NOTE]  
 > You're viewing **latest** channel, [click me to check **Nightly** channel.](https://github.com/xlionjuan/rustdesk-apt-repo-nightly)
 
+> [!NOTE]  
+> This repo also contains[RustDesk Server suite](https://github.com/rustdesk/rustdesk-server) including hbbr, hbbs, utils.
 
 > [!IMPORTANT]  
 > This is ***unofficial*** [RustDesk](https://github.com/rustdesk/rustdesk/) apt repo, what I can say is *trust me bro*, it is your decision to trust me or not.
@@ -18,6 +20,7 @@ This repo privides following architectures
 * `amd64`  (x86_64)
 * `arm64`  (aarch64)
 * `armhf`  (armv7)
+* `i386`   (Only on [RustDesk Server](https://github.com/rustdesk/rustdesk-server))
 
 And `armhf` only has sciter verion.
 

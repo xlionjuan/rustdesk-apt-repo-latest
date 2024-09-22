@@ -16,7 +16,7 @@ env:
     REPO_NAME: xlion-rustdesk-latest-apt-repo
     CODENAME: main
     COMPONENTS: main
-    ARCHITECTURES: amd64 arm64 armhf
+    ARCHITECTURES: amd64 arm64 armhf i386
     # armhf is ARMv7 (32bit) 
   
 jobs:
@@ -34,6 +34,7 @@ jobs:
         - name: Download RustDesk
           run: |
             bash rustdesk_latest.sh
+            bash rustdesk-server_latest.sh
 
         - uses: morph027/apt-repo-action@v3.3
           id: create-apt-repo
