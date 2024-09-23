@@ -1,0 +1,8 @@
+Package: rustdesk-server
+Version: 1.0
+Section: metapackages
+Priority: optional
+Architecture: all
+Depends: rustdesk-server-hbbr, rustdesk-server-hbbs, rustdesk-server-utils
+Maintainer: XLion <xlion@xlion.tw>
+Description: RustDesk Server metapackage, it contains hbbs, hbbr, utils.
