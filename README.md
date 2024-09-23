@@ -62,6 +62,20 @@ EOF
 > [!NOTE]  
 > Deb822 style format are designed for more human readable, older style format will still supported on newer systems.
 
+## Install/Upgrade RustDesk/RustDesk Server
+
+### For RustDesk
+```bash
+sudo apt update && sudo apt install rustdesk
+```
+
+### For RustDesk Server
+```bash
+sudo apt update && sudo apt install rustdesk-server
+```
+
+`rustdesk-server` is a metapackage that will install `rustdesk-server-hbbr`, `rustdesk-server-hbbs`, `rustdesk-server-utils` all in once!
+
 ## FAQ
 ### ***Not needed anymore, just enable i386 support in the repo, no any packages in it is fine.***
 ### ~~I got i386 error~~
