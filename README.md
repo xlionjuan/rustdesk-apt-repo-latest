@@ -1,13 +1,16 @@
 # rustdesk-apt-repo-latest
 
+> [!IMPORTANT]  
+> This is ***unofficial*** [RustDesk](https://github.com/rustdesk/rustdesk/) apt repo, what I can say is *trust me bro*, it is your decision to trust me or not.
+
 > [!NOTE]  
 > You're viewing **latest** channel, [click me to check **Nightly** channel.](https://github.com/xlionjuan/rustdesk-apt-repo-nightly)
 
 > [!NOTE]  
 > This repo also contains [RustDesk Server suite](https://github.com/rustdesk/rustdesk-server) including hbbr, hbbs, utils, though I personality recommand to use [Docker 🐋 ](https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/ubuntu-server/docker/).
 
-> [!IMPORTANT]  
-> This is ***unofficial*** [RustDesk](https://github.com/rustdesk/rustdesk/) apt repo, what I can say is *trust me bro*, it is your decision to trust me or not.
+> [!NOTE]  
+> Same thing but [RPM](https://github.com/xlionjuan/rustdesk-apt-repo-latest) is also available.
 
 This repo will use [morph027/apt-repo-action](https://github.com/morph027/apt-repo-action) to create repo, and deploy to GitHub Pages.
 
@@ -15,7 +18,7 @@ The `.sh` script is written by ChatGPT, it will fetch the release data from GitH
 
 ## Architectures
 
-This repo privides following architectures
+This repo provides following architectures
 
 * `amd64`  (x86_64)
 * `arm64`  (aarch64)
@@ -26,7 +29,7 @@ And `armhf` only has sciter verion.
 
 ## Update frequency
 
-* Nightly: Every 3 AM UTC, because RustDesk's Nightly will run a little over 2 hours.
+* Nightly: Every 3 AM UTC, because RustDesk's Nightly will build a little over 2 hours.
 * latest: Every Saturday
 
 ## Add this repo
