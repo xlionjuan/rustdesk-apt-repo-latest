@@ -10,7 +10,7 @@
 > This repo also contains [RustDesk Server suite](https://github.com/rustdesk/rustdesk-server) including hbbr, hbbs, utils, though I personality recommand to use [Docker 🐋 ](https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/ubuntu-server/docker/).
 
 > [!NOTE]  
-> Same thing but [RPM](https://github.com/xlionjuan/rustdesk-apt-repo-latest) is also available.
+> Same thing but [RPM](https://github.com/xlionjuan/rustdesk-rpm-repo) is also available.
 
 This repo will use [morph027/apt-repo-action](https://github.com/morph027/apt-repo-action) to create repo, and deploy to GitHub Pages.
 
