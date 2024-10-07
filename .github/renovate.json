@@ -6,6 +6,7 @@
     {
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["major", "minor", "patch"],
+      "ignoreTests": true,
       "automerge": true
     }
   ]
