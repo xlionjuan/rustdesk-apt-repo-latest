@@ -1,5 +1,7 @@
 # rustdesk-apt-repo-latest
 
+[![Create Repo for RustDesk latest](https://github.com/xlionjuan/rustdesk-apt-repo-latest/actions/workflows/latest.yml/badge.svg)](https://github.com/xlionjuan/rustdesk-apt-repo-latest/actions/workflows/latest.yml)
+
 > [!IMPORTANT]  
 > This is ***unofficial*** [RustDesk](https://github.com/rustdesk/rustdesk/) apt repo, what I can say is *trust me bro*, it is your decision to trust me or not.
 
