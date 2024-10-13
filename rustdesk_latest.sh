@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -oue pipefail
+
 # Define the repository and the tag you want to fetch
 REPO="rustdesk/rustdesk"
 #TAG="latest"  # Change this to any tag you want

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -oue pipefail
+
 # Define the repository you want to fetch
 REPO="rustdesk/rustdesk-server"
 API_URL="https://api.github.com/repos/$REPO/releases/latest"
