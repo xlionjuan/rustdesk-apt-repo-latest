@@ -27,5 +27,7 @@ echo "-------------------DOWNLOADING------------------"
 
 # Loop through each URL and download the .deb files
 for url in $DEB_URLS; do
-    wget "$url"
+    wget "$url" &
 done
+
+wait

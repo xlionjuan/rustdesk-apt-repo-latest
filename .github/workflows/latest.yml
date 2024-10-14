@@ -32,11 +32,7 @@ jobs:
           uses: actions/configure-pages@v5
 
         - name: Download RustDesk
-          run: |
-            # Create metapackage for RustDesk Server
-            dpkg-deb --build rustdesk-server-meta rustdesk-server-meta.deb
-            bash rustdesk_latest.sh
-            bash rustdesk-server_latest.sh
+          run: dpkg-deb --build rustdesk-server-meta rustdesk-server-meta.deb & bash rustdesk_latest.sh & bash rustdesk-server_latest.sh
 
         - uses: morph027/apt-repo-action@v3.3
           id: create-apt-repo
