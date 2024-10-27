@@ -22,19 +22,18 @@ env:
 jobs:
     build:
       runs-on: ubuntu-latest
-      outputs:
-        artifact_id: ${{ steps.upload-artifact.outputs.artifact-id }}
-        keyring: ${{ steps.create-apt-repo.outputs.keyring }}
+      container: ghcr.io/xlionjuan/fedora-createrepo-image-minimal:latest
       steps:
         - name: Checkout code
           uses: actions/checkout@v4
+
         - name: Setup Pages
           uses: actions/configure-pages@v5
 
         - name: Download RustDesk
           run: dpkg-deb --build rustdesk-server-meta rustdesk-server-meta.deb & bash rustdesk_latest.sh & bash rustdesk-server_latest.sh
 
-        - uses: morph027/apt-repo-action@v3.3
+        - uses: xlionjuan/apt-repo-action@main
           id: create-apt-repo
           with:
             repo-name: ${{ env.REPO_NAME }}
