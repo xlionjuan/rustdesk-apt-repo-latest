@@ -25,4 +25,4 @@ echo "$DEB_URLS"
 echo ""
 echo "-------------------DOWNLOADING------------------"
 
-wget "$DEB_URLS"
+wget $DEB_URLS
