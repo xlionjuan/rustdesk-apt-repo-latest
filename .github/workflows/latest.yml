@@ -56,7 +56,6 @@ jobs:
             codename: ${{ env.CODENAME }}
             components: ${{ env.COMPONENTS }}
             architectures: ${{ env.ARCHITECTURES }}
-            override: ./override # the location of the file within your repo, thats why checkout is needed before
 
         - name: Upload Pages artifact
           uses: actions/upload-pages-artifact@v3
