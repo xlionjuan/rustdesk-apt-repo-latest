@@ -8,11 +8,11 @@ REPO="rustdesk/rustdesk"
 #API_URL="https://api.github.com/repos/$REPO/releases/tags/$TAG"
 API_URL="https://api.github.com/repos/$REPO/releases/latest"
 # Fetch the release data for the specified tag using curl
-RELEASE_DATA=$(curl --retry 3 -s "$API_URL")
+RELEASE_DATA=$(curl --retry 12 --retry-all-errors -s "$API_URL")
 
-# Check if RELEASE_DATA is not empty
-if [ -z "$RELEASE_DATA" ]; then
-    echo "Failed to fetch release data. Please check your internet connection or the repository/tag name."
+# Check if RELEASE_DATA contains "browser_download_url"
+if ! echo "$RELEASE_DATA" | grep -q "browser_download_url"; then
+    echo "'browser_download_url' not found in release data. Please check the repository/tag name or API response."
     exit 1
 fi
 
