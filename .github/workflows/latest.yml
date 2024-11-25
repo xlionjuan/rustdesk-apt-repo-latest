@@ -4,6 +4,16 @@ on:
   schedule:
     # Every Saturday at 3AM UTC
     - cron: "0 3 * * 6"
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
   workflow_dispatch:
 
 
@@ -63,6 +73,8 @@ jobs:
             name: github-pages
             path: ${{ steps.create-apt-repo.outputs.dir }}
     deploy:
+      name: Deploy to GitHub Pages
+      if: github.event_name != 'pull_request'
       environment:
         name: github-pages
         url: ${{ steps.deployment.outputs.page_url }}
