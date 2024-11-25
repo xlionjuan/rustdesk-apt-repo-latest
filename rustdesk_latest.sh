@@ -12,7 +12,7 @@ RELEASE_DATA=$(curl --retry 12 --retry-all-errors -s "$API_URL")
 wait
 
 # Check if RELEASE_DATA contains "browser_download_url"
-if ! echo "$RELEASE_DATA" | grep -q "browser_download_url"; then
+if ! echo "$RELEASE_DATA" | jq -e '.assets[]? | select(.browser_download_url? != null)' > /dev/null; then
     echo "'browser_download_url' not found in release data. Please check the repository/tag name or API response."
     exit 1
 fi
