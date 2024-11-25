@@ -8,6 +8,7 @@ API_URL="https://api.github.com/repos/$REPO/releases/latest"
 
 # Fetch the release data using curl
 RELEASE_DATA=$(curl --retry 12 --retry-all-errors -s "$API_URL")
+wait
 
 # Check if RELEASE_DATA contains "browser_download_url"
 if ! echo "$RELEASE_DATA" | grep -q "browser_download_url"; then
