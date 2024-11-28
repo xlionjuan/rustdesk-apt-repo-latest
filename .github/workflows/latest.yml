@@ -75,15 +75,34 @@ jobs:
           with:
             name: github-pages
             path: ${{ steps.create-apt-repo.outputs.dir }}
-    deploy:
-      name: Deploy to GitHub Pages
-      if: github.event_name != 'pull_request'
-      environment:
-        name: github-pages
-        url: ${{ steps.deployment.outputs.page_url }}
+
+        - name: Publish Artifacts
+          uses: actions/upload-artifact@v4
+          with:
+            name: latest
+            path: ${{ steps.create-apt-repo.outputs.dir }}
+            if-no-files-found: error
+
+    push-to-cf-r2:
+      name: Push to Cloudflare R2
+    # if: github.event_name != 'pull_request'
       runs-on: ubuntu-latest
       needs: build
       steps:
-        - name: Deploy to GitHub Pages
-          id: deployment
-          uses: actions/deploy-pages@v4
+        - name: Download artifact
+          uses: actions/download-artifact@v4
+          with:
+            pattern: cf_r2
+            path: src-dir
+            merge-multiple: true
+    
+        - name: Upload to Cloudflare R2
+          uses: ryand56/r2-upload-action@latest
+          with:
+            r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
+            r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
+            r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+            r2-bucket: ${{ secrets.R2_BUCKET }}
+            keep-file-fresh: true
+            source-dir: src-dir
+            destination-dir: ./latest
