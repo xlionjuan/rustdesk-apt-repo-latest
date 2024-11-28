@@ -80,19 +80,3 @@ sudo apt update && sudo apt install rustdesk-server
 ```
 
 `rustdesk-server` is a metapackage that will install `rustdesk-server-hbbr`, `rustdesk-server-hbbs`, `rustdesk-server-utils` all in once!
-
-## FAQ
-### ***Not needed anymore, just enable i386 support in the repo, no any packages in it is fine.***
-### ~~I got i386 error~~
-
-~~If you got the warning like this~~
-```
-N: Skipping acquire of configured file 'main/binary-i386/Packages' as repository 'https://xlionjuan.github.io/rustdesk-apt-repo-latest main InRelease' doesn't support architecture 'i386'
-```
-~~This is because you enabled `i386`(32bit) on your apt, mainly because you're a developer or you have installed Steam 32bit library, you can ignore this, but it is annoying! Let's fix this~~
-
-#### ~~Deb822~~
-~~Uncomment the line with `Architectures:`~~
-
-#### ~~Older style~~
-~~Comment the line starts with `deb`, and uncomment the line that has `arch=amd64`~~
