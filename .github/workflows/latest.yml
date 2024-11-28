@@ -79,7 +79,7 @@ jobs:
         - name: Publish Artifacts
           uses: actions/upload-artifact@v4
           with:
-            name: latest
+            name: cf_r2
             path: ${{ steps.create-apt-repo.outputs.dir }}
             if-no-files-found: error
 
