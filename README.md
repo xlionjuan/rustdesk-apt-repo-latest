@@ -38,31 +38,45 @@ And `armhf` only has sciter verion.
 ### Add GPG key
 Nightly and latest are sharing same GPG key.
 ```
-curl -fsSL https://raw.githubusercontent.com/xlionjuan/rustdesk-apt-repo-nightly/refs/heads/main/pubkey.gpg | sudo gpg --yes --dearmor --output /usr/share/keyrings/xlion-repo.gpg
+curl -fsSL https://xlionjuan.github.io/rustdesk-apt-repo-latest/gpg.key | sudo gpg --yes --dearmor --output /usr/share/keyrings/xlion-repo.gpg
 ```
 
 ### Add apt source
 #### For Ubuntu 24 / Debian 12 or latter (Deb822 style format)
 
 ```bash
-sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.sources << EOF
-# Change "latest" to "nightly" if you want to switch channel
-Types: deb
-URIs: https://xlionjuan.github.io/rustdesk-apt-repo-latest
-Suites: main
-Components: main
-Signed-By: /usr/share/keyrings/xlion-repo.gpg
-EOF
+curl -fsSl https://xlionjuan.github.io/rustdesk-apt-repo-latest/latest.sources | sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.sources
 ```
+
+<details>
+<summary>If you wants Cloudflare...</summary>
+<br>
+GitHub is using Fastly CDN, which performs terrible on lots of countries, I also pushed the repo to Cloudflare R2, which has better speed.
+
+But due to bot fight mode is enabled, some VPS providers such as AWS, Azure (GitHub Actions) will be blocked, please use GitHub Pages instead.
+
+```bash
+curl -fsSl https://xlionjuan.github.io/rustdesk-apt-repo-latest/latest-r2.sources | sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.sources
+```
+</details>
 
 #### For older version
 
 ```bash
-sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.list << EOF
-# Change "latest" to "nightly" if you want to switch channel
-deb [signed-by=/usr/share/keyrings/xlion-repo.gpg] https://xlionjuan.github.io/rustdesk-apt-repo-latest main main
-EOF
+curl -fsSl https://xlionjuan.github.io/rustdesk-apt-repo-latest/latest.list | sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.list
 ```
+
+<details>
+<summary>If you wants Cloudflare...</summary>
+<br>
+GitHub is using Fastly CDN, which performs terrible on lots of countries, I also pushed the repo to Cloudflare R2, which has better speed.
+
+But due to bot fight mode is enabled, some VPS providers such as AWS, Azure (GitHub Actions) will be blocked, please use GitHub Pages instead.
+
+```bash
+curl -fsSl https://xlionjuan.github.io/rustdesk-apt-repo-latest/latest-r2.list | sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.list
+```
+</details>
 
 > [!NOTE]  
 > Deb822 style format are designed for more human readable, older style format will still supported on newer systems.
@@ -80,19 +94,3 @@ sudo apt update && sudo apt install rustdesk-server
 ```
 
 `rustdesk-server` is a metapackage that will install `rustdesk-server-hbbr`, `rustdesk-server-hbbs`, `rustdesk-server-utils` all in once!
-
-## FAQ
-### ***Not needed anymore, just enable i386 support in the repo, no any packages in it is fine.***
-### ~~I got i386 error~~
-
-~~If you got the warning like this~~
-```
-N: Skipping acquire of configured file 'main/binary-i386/Packages' as repository 'https://xlionjuan.github.io/rustdesk-apt-repo-latest main InRelease' doesn't support architecture 'i386'
-```
-~~This is because you enabled `i386`(32bit) on your apt, mainly because you're a developer or you have installed Steam 32bit library, you can ignore this, but it is annoying! Let's fix this~~
-
-#### ~~Deb822~~
-~~Uncomment the line with `Architectures:`~~
-
-#### ~~Older style~~
-~~Comment the line starts with `deb`, and uncomment the line that has `arch=amd64`~~
