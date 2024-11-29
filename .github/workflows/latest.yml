@@ -106,7 +106,7 @@ jobs:
           uses: actions/download-artifact@v4
           with:
             pattern: cf_r2
-            path: src-dir
+            path: src-dir/latest
             merge-multiple: true
     
         - name: Upload to Cloudflare R2
@@ -118,4 +118,4 @@ jobs:
             r2-bucket: ${{ secrets.R2_BUCKET }}
             keep-file-fresh: true
             source-dir: src-dir
-            destination-dir: ./latest
+            destination-dir: ./
