@@ -83,6 +83,19 @@ jobs:
             path: ${{ steps.create-apt-repo.outputs.dir }}
             if-no-files-found: error
 
+    deploy:
+      name: Deploy to GitHub Pages
+      if: github.event_name != 'pull_request'
+      environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+      runs-on: ubuntu-latest
+      needs: build
+      steps:
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v4
+
     push-to-cf-r2:
       name: Push to Cloudflare R2
       if: github.event_name != 'pull_request'
