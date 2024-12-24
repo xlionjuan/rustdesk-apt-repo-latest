@@ -1,0 +1,18 @@
+name: Gitlab Mirror
+
+on: [push, pull_request, create, delete]
+
+jobs:
+  sync:
+    name: Gitlab Mirror
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: action-pack/gitlab-sync@38077a591a7f2ceb6ff6026e6beb2954a3be0f93
+        with:
+          username: ${{ github.actor }}
+          url: https://gitlab.com/${{ github.repository }}.git
+          # Personal access token from gitlab.com 
+          token: ${{ secrets.GITLAB_TOKEN }}
