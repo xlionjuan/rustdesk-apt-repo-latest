@@ -32,7 +32,7 @@ env:
 jobs:
     verify:
       name: Verify container
-      runs-on: ubuntu-latest
+      runs-on: ubuntu-24.04-arm
       steps:
         - name: Install Cosign
           uses: sigstore/cosign-installer@v3.7.0
@@ -45,7 +45,7 @@ jobs:
             ghcr.io/xlionjuan/fedora-createrepo-image:latest
 
     build:
-      runs-on: ubuntu-latest
+      runs-on: ubuntu-24.04-arm
       needs: verify
       container: ghcr.io/xlionjuan/fedora-createrepo-image:latest
       steps:
@@ -90,7 +90,7 @@ jobs:
       environment:
         name: github-pages
         url: ${{ steps.deployment.outputs.page_url }}
-      runs-on: ubuntu-latest
+      runs-on: ubuntu-24.04-arm
       needs: build
       steps:
         - name: Deploy to GitHub Pages
@@ -100,7 +100,7 @@ jobs:
     push-to-cf-r2:
       name: Push to Cloudflare R2
       if: github.event_name != 'pull_request'
-      runs-on: ubuntu-latest
+      runs-on: ubuntu-24.04-arm
       needs: build
       steps:
         - name: Download artifact

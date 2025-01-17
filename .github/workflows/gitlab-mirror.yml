@@ -1,11 +1,11 @@
 name: Gitlab Mirror
 
-on: [push, pull_request, create, delete]
+on: [push, create, delete]
 
 jobs:
   sync:
     name: Gitlab Mirror
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
         with:
