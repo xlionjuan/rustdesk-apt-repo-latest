@@ -35,7 +35,7 @@ jobs:
       runs-on: ubuntu-24.04-arm
       steps:
         - name: Install Cosign
-          uses: sigstore/cosign-installer@v3.8.0
+          uses: sigstore/cosign-installer@c56c2d3e59e4281cc41dea2217323ba5694b171e # v3.8.0
 
         - name: Verify
           run: |
@@ -50,10 +50,10 @@ jobs:
       container: ghcr.io/xlionjuan/fedora-createrepo-image:latest
       steps:
         - name: Checkout code
-          uses: actions/checkout@v4
+          uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
         - name: Setup Pages
-          uses: actions/configure-pages@v5
+          uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
 
         - name: Download RustDesk
           run: dpkg-deb --build rustdesk-server-meta rustdesk-server-meta.deb & bash rustdesk_latest.sh & bash rustdesk-server_latest.sh
@@ -72,13 +72,13 @@ jobs:
           run: cp -r wwwroot/* ${{ steps.create-apt-repo.outputs.dir }}
 
         - name: Upload Pages artifact
-          uses: actions/upload-pages-artifact@v3
+          uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
           with:
             name: github-pages
             path: ${{ steps.create-apt-repo.outputs.dir }}
 
         - name: Publish Artifacts
-          uses: actions/upload-artifact@v4
+          uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4
           with:
             name: cf_r2
             path: ${{ steps.create-apt-repo.outputs.dir }}
@@ -95,7 +95,7 @@ jobs:
       steps:
         - name: Deploy to GitHub Pages
           id: deployment
-          uses: actions/deploy-pages@v4
+          uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
 
     push-to-cf-r2:
       name: Push to Cloudflare R2
@@ -104,7 +104,7 @@ jobs:
       needs: build
       steps:
         - name: Download artifact
-          uses: actions/download-artifact@v4
+          uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
           with:
             pattern: cf_r2
             path: src-dir/latest
