@@ -42,7 +42,7 @@ curl -fsSL https://xlionjuan.github.io/rustdesk-apt-repo-latest/gpg.key | sudo g
 ```
 
 ### Add apt source
-#### For Ubuntu 24 / Debian 12 or latter (Deb822 style format)
+<!--#### For Ubuntu 24 / Debian 12 or latter (Deb822 style format)-->
 
 ```bash
 curl -fsSl https://xlionjuan.github.io/rustdesk-apt-repo-latest/latest.sources | sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.sources
@@ -60,6 +60,7 @@ curl -fsSl https://xlionjuan.github.io/rustdesk-apt-repo-latest/latest-r2.source
 ```
 </details>
 
+<!--
 #### For older version
 
 ```bash
@@ -80,6 +81,7 @@ curl -fsSl https://xlionjuan.github.io/rustdesk-apt-repo-latest/latest-r2.list |
 
 > [!NOTE]  
 > Deb822 style format are designed for more human readable, older style format will still supported on newer systems.
+-->
 
 ## Install/Upgrade RustDesk/RustDesk Server
 
