@@ -15,12 +15,6 @@ on:
     paths-ignore:
       - '**.md'
   workflow_dispatch:
-
-
-permissions:
-    contents: read
-    pages: write
-    id-token: write
   
 env:
     REPO_NAME: xlion-rustdesk-latest-apt-repo
@@ -28,7 +22,10 @@ env:
     COMPONENTS: main
     ARCHITECTURES: amd64 arm64 armhf i386
     # armhf is ARMv7 (32bit) 
-  
+
+permissions:
+    contents: read
+
 jobs:
     verify:
       name: Verify container
@@ -50,10 +47,9 @@ jobs:
       container: ghcr.io/xlionjuan/fedora-createrepo-image:latest
       steps:
         - name: Checkout code
-          uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-
-        - name: Setup Pages
-          uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+          uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+          with:
+            persist-credentials: false
 
         - name: Download RustDesk
           run: dpkg-deb --build rustdesk-server-meta rustdesk-server-meta.deb & bash rustdesk_latest.sh & bash rustdesk-server_latest.sh
@@ -69,16 +65,18 @@ jobs:
             architectures: ${{ env.ARCHITECTURES }}
 
         - name: Copy wwwroot to the output folder
-          run: cp -r wwwroot/* ${{ steps.create-apt-repo.outputs.dir }}
+          env:
+            APT_REPO_OUTPUT_DIR: ${{ steps.create-apt-repo.outputs.dir }}
+          run: cp -r wwwroot/* ${APT_REPO_OUTPUT_DIR}
 
         - name: Upload Pages artifact
-          uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+          uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
           with:
             name: github-pages
             path: ${{ steps.create-apt-repo.outputs.dir }}
 
         - name: Publish Artifacts
-          uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4
+          uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
           with:
             name: cf_r2
             path: ${{ steps.create-apt-repo.outputs.dir }}
@@ -92,10 +90,14 @@ jobs:
         url: ${{ steps.deployment.outputs.page_url }}
       runs-on: ubuntu-24.04-arm
       needs: build
+      permissions:
+        contents: read
+        pages: write
+        id-token: write
       steps:
         - name: Deploy to GitHub Pages
           id: deployment
-          uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+          uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
 
     push-to-cf-r2:
       name: Push to Cloudflare R2
@@ -104,7 +106,7 @@ jobs:
       needs: build
       steps:
         - name: Download artifact
-          uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
+          uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
           with:
             pattern: cf_r2
             path: src-dir/latest
