@@ -5,9 +5,6 @@ set -oue pipefail
 CURRENT_DIR="$(pwd)"
 SOURCE_DIR="$(pwd)/ori" # Directory containing the original .deb files
 
-export LANG=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-
 # Iterate over all .deb files in the source directory
 for deb_file in "$SOURCE_DIR"/*.deb; do
     if [ -f "$deb_file" ]; then
