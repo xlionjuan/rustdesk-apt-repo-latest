@@ -51,6 +51,18 @@ jobs:
           with:
             persist-credentials: false
 
+        - name: Download Keyring
+          shell: bash
+          run: |
+            url=$(curl -s https://api.github.com/repos/xlionjuan/xlion-repo-archive-keyring/releases/latest | jq -r '.assets[] | select(.name | endswith(".deb")) | .browser_download_url') && tmpfile="$(basename "$url")" && curl -L "$url" -o "$tmpfile"
+
+        - name: Verify Keyring
+          shell: bash
+          env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          run: |
+            gh attestation verify --owner xlionjuan --predicate-type 'https://in-toto.io/attestation/release' xlion-repo-archive-keyring*
+
         - name: Download RustDesk
           run: dpkg-deb --build rustdesk-server-meta rustdesk-server-meta.deb & bash rustdesk_latest.sh & bash rustdesk-server_latest.sh
 
