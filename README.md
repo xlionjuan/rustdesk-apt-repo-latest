@@ -14,6 +14,9 @@
 > [!NOTE]  
 > Same thing but [RPM](https://github.com/xlionjuan/rustdesk-rpm-repo) is also available.
 
+> [!NOTE]  
+> Cloudflare R2 source is deprecated, but it will still available for some time.
+
 This repo will use modified version of [morph027/apt-repo-action](https://github.com/xlionjuan/apt-repo-action) and [xlionjuan/fedora-createrepo-image](https://github.com/xlionjuan/fedora-createrepo-image) to create repo, and deploy to GitHub Pages.
 
 The `.sh` script is written by ChatGPT, it will fetch the release data from GitHub API and use [jq](https://github.com/jqlang/jq) to parse JSON data and find the asset URL.
@@ -36,52 +39,18 @@ And `armhf` only has sciter verion.
 
 ## Add this repo
 ### Add GPG key
-Nightly and latest are sharing same GPG key.
+
+Please install [xlion-repo-archive-keyring](https://github.com/xlionjuan/xlion-repo-archive-keyring) package, you need to have `jq` and `curl` installed, this command will query GitHub API to get letest keyring package and install it. If you're mind installing by this way, please go to [its releases](https://github.com/xlionjuan/xlion-repo-archive-keyring/releases) and verify it with SHA256.
+
 ```
-curl -fsSL https://xlionjuan.github.io/rustdesk-apt-repo-latest/gpg.key | sudo gpg --yes --dearmor --output /usr/share/keyrings/xlion-repo.gpg
+sudo apt-get update && sudo apt-get install -y jq curl && url=$(curl -s https://api.github.com/repos/xlionjuan/xlion-repo-archive-keyring/releases/latest | jq -r '.assets[] | select(.name | endswith(".deb")) | .browser_download_url') && tmpfile="/tmp/$(basename "$url")" && curl -L "$url" -o "$tmpfile" && sudo dpkg -i "$tmpfile"
 ```
 
 ### Add apt source
-<!--#### For Ubuntu 24 / Debian 12 or latter (Deb822 style format)-->
 
 ```bash
 curl -fsSl https://xlionjuan.github.io/rustdesk-apt-repo-latest/latest.sources | sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.sources
 ```
-
-<details>
-<summary>If you wants Cloudflare...</summary>
-<br>
-GitHub is using Fastly CDN, which performs terrible on lots of countries, I also pushed the repo to Cloudflare R2, which has better speed.
-
-But due to bot fight mode is enabled, some VPS providers such as AWS, Azure (GitHub Actions) will be blocked, please use GitHub Pages instead.
-
-```bash
-curl -fsSl https://xlionjuan.github.io/rustdesk-apt-repo-latest/latest-r2.sources | sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.sources
-```
-</details>
-
-<!--
-#### For older version
-
-```bash
-curl -fsSl https://xlionjuan.github.io/rustdesk-apt-repo-latest/latest.list | sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.list
-```
-
-<details>
-<summary>If you wants Cloudflare...</summary>
-<br>
-GitHub is using Fastly CDN, which performs terrible on lots of countries, I also pushed the repo to Cloudflare R2, which has better speed.
-
-But due to bot fight mode is enabled, some VPS providers such as AWS, Azure (GitHub Actions) will be blocked, please use GitHub Pages instead.
-
-```bash
-curl -fsSl https://xlionjuan.github.io/rustdesk-apt-repo-latest/latest-r2.list | sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.list
-```
-</details>
-
-> [!NOTE]  
-> Deb822 style format are designed for more human readable, older style format will still supported on newer systems.
--->
 
 ## Install/Upgrade RustDesk/RustDesk Server
 

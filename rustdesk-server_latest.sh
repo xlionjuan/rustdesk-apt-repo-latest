@@ -26,4 +26,4 @@ echo "$DEB_URLS"
 echo ""
 echo "-------------------DOWNLOADING------------------"
 
-wget $DEB_URLS
+wget2 -P "ori" $DEB_URLS
