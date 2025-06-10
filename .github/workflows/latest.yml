@@ -55,7 +55,6 @@ jobs:
           run: dpkg-deb --build rustdesk-server-meta rustdesk-server-meta.deb & bash rustdesk_latest.sh & bash rustdesk-server_latest.sh
 
         - name: Repackage
-          if: false
           run: |
             bash repackage.sh
 
