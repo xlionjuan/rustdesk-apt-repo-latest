@@ -52,6 +52,17 @@ sudo apt-get update && sudo apt-get install -y jq curl && url=$(curl -s https://
 curl -fsSl https://xlionjuan.github.io/rustdesk-apt-repo-latest/latest.sources | sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.sources
 ```
 
+<details>
+<summary>GitLab Pages...</summary>
+<br>
+
+Because of terrible Fastly CDN, you may want another choices, import the GitHub Pages' sources first, than run this command.
+
+```bash
+sed -i 's/github/gitlab/g' /etc/apt/sources.list.d/xlion-rustdesk-repo.sources
+```
+</details>
+
 ## Install/Upgrade RustDesk/RustDesk Server
 
 ### For RustDesk
