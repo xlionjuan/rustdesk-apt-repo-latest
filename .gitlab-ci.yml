@@ -1,0 +1,20 @@
+stages:
+  - build
+
+pages:
+  image: "quay.io/fedora/fedora:latest"
+  stage: build
+  variables:
+    GIT_STRATEGY: none
+    GH_TOKEN: $GH_TOKEN
+  script:
+    - sudo dnf install -y gh tar
+    - gh run download -R xlionjuan/rustdesk-apt-repo-latest -n github-pages
+    - mkdir public
+    - tar -xvf *.tar -C public/
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main" && $CI_PIPELINE_SOURCE == "push"'
+    - if: $CI_PIPELINE_SOURCE == "schedule"
