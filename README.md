@@ -49,7 +49,7 @@ sudo apt-get update && sudo apt-get install -y jq curl && url=$(curl -s https://
 ### Add apt source
 
 ```bash
-curl -fsSl https://xlionjuan.github.io/rustdesk-apt-repo-latest/latest.sources | sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.sources
+curl -fsSL https://xlionjuan.github.io/rustdesk-apt-repo-latest/latest.sources | sudo tee /etc/apt/sources.list.d/xlion-rustdesk-repo.sources
 ```
 
 <details>
