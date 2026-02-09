@@ -20,8 +20,7 @@ env:
     REPO_NAME: xlion-rustdesk-latest-apt-repo
     CODENAME: main
     COMPONENTS: main
-    ARCHITECTURES: amd64 arm64 armhf i386
-    # armhf is ARMv7 (32bit) 
+    DISTRIBUTION: main
 
 permissions:
     contents: read
@@ -41,7 +40,7 @@ jobs:
             --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
             ghcr.io/xlionjuan/fedora-createrepo-image:latest
 
-    build:
+    prepare:
       runs-on: ubuntu-24.04-arm
       needs: verify
       container: ghcr.io/xlionjuan/fedora-createrepo-image:latest
@@ -70,32 +69,102 @@ jobs:
           run: |
             bash repackage.sh
 
-        - name: Create apt repository
-          uses: xlionjuan/apt-repo-action@6904bef9c1e836ccccaac1f541bacf8f58be66ff
-          id: create-apt-repo
-          with:
-            repo-name: ${{ env.REPO_NAME }}
-            signing-key: ${{ secrets.SIGNING_KEY }}
-            codename: ${{ env.CODENAME }}
-            components: ${{ env.COMPONENTS }}
-            architectures: ${{ env.ARCHITECTURES }}
+        - name: Initialize apt repository
+          run: |
+            aptly repo create \
+              -component=${{ env.COMPONENTS }} \
+              -distribution=${{ env.DISTRIBUTION }} \
+              repo-target
+            
+        - name: Add .deb to apt repository
+          run: |
+            aptly repo add repo-target .
 
-        - name: Copy wwwroot to the output folder
+        - name: Copy wwwroot to aptly public folder
+          run: |
+            mkdir -p  $HOME/.aptly/public
+            cp -r wwwroot/* $HOME/.aptly/public
+
+        - name: Publish aptly workspace
+          uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+          with:
+            name: aptly-workspace
+            path: ~/.aptly
+            if-no-files-found: error
+            include-hidden-files: true
+
+    publish:
+      name: Publish and sign repository
+      runs-on: ubuntu-24.04-arm
+      needs: prepare
+      container: ghcr.io/xlionjuan/fedora-createrepo-image:latest
+      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+
+      steps:
+        - name: Download aptly workspace
+          uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+          with:
+            pattern: aptly-workspace
+            path: ~/.aptly
+
+        - name: Prepare ephemeral GPG home
+          shell: bash
+          run: |
+            set -euo pipefail
+            umask 077
+            echo "GNUPGHOME=$(mktemp -d)" >> "$GITHUB_ENV"
+            echo "GPG_TTY=" >> "$GITHUB_ENV"
+
+        - name: Import GPG Key
+          shell: bash
+          run: |
+            set -euo pipefail
+            umask 077
+
+            IMPORT_FPR="$(
+              printf '%s' "$GPG_PRIVATE_KEY" |
+              gpg --batch --yes --status-fd=1 --import 2>/dev/null |
+              sed 's/\[GNUPG:\]/\n[GNUPG:]/g' |
+              awk '/^\[GNUPG:\] IMPORT_OK/ {print $4; exit}'
+            )"
+            test -n "$IMPORT_FPR"
+            
+            echo "GPG_FINGERPRINT=$IMPORT_FPR" >> "$GITHUB_ENV"
           env:
-            APT_REPO_OUTPUT_DIR: ${{ steps.create-apt-repo.outputs.dir }}
-          run: cp -r wwwroot/* ${APT_REPO_OUTPUT_DIR}
+            GPG_PRIVATE_KEY: ${{ secrets.SIGNING_KEY }}
+
+        - name: Publish apt repository
+          run: |
+            aptly publish repo \
+              -distribution=${{ env.DISTRIBUTION }} \
+              -component=${{ env.COMPONENTS }} \
+              -label=${{ env.REPO_NAME }} \
+              -suite=${{ env.REPO_NAME }} \
+              -origin=${{ env.REPO_NAME }} \
+              -gpg-key=${{ env.GPG_FINGERPRINT }} \
+              repo-target
+
+        - name: Clean up
+          if: always()
+          run: |
+            rm -rf "$GNUPGHOME" || true
+
+        - name: Ensure publish path has no '.'
+          run: |
+            mkdir -p /tmp/public
+            cp -r ~/.aptly/public/* /tmp/public
 
         - name: Upload Pages artifact
           uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
           with:
             name: github-pages
-            path: ${{ steps.create-apt-repo.outputs.dir }}
+            path: /tmp/public
 
         - name: Publish Artifacts
           uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
           with:
             name: cf_r2
-            path: ${{ steps.create-apt-repo.outputs.dir }}
+            path: /tmp/public
             if-no-files-found: error
 
     deploy:
@@ -105,7 +174,7 @@ jobs:
         name: github-pages
         url: ${{ steps.deployment.outputs.page_url }}
       runs-on: ubuntu-24.04-arm
-      needs: build
+      needs: publish
       permissions:
         contents: read
         pages: write
@@ -119,7 +188,7 @@ jobs:
       name: Push to Cloudflare R2
       if: github.event_name != 'pull_request'
       runs-on: ubuntu-24.04-arm
-      needs: build
+      needs: publish
       steps:
         - name: Download artifact
           uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
