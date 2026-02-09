@@ -42,6 +42,7 @@ jobs:
 
     prepare:
       runs-on: ubuntu-24.04-arm
+      name: Prepare
       needs: verify
       container: ghcr.io/xlionjuan/fedora-createrepo-image:latest
       steps:
