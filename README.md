@@ -40,10 +40,10 @@ And `armhf` only has sciter version.
 ## Add this repo
 ### Add GPG key
 
-Please install [xlion-repo-archive-keyring](https://github.com/xlionjuan/xlion-repo-archive-keyring) package, you need to have `jq` and `curl` installed, this command will query GitHub API to get latest keyring package and install it. If you mind installing it this way, please go to [its releases](https://github.com/xlionjuan/xlion-repo-archive-keyring/releases) and verify it with SHA256.
+Please install [xlion-repo-archive-keyring](https://github.com/xlionjuan/xlion-repo-archive-keyring) package, you need to have `jq` and `curl` installed, this command will query GitHub API to get latest keyring package, verify its SHA256 and install it.
 
 ```bash
-sudo apt-get update && sudo apt-get install -y jq curl && url=$(curl -s https://api.github.com/repos/xlionjuan/xlion-repo-archive-keyring/releases/latest | jq -r '.assets[] | select(.name | endswith(".deb")) | .browser_download_url') && tmpfile="/tmp/$(basename "$url")" && curl -L "$url" -o "$tmpfile" && sudo dpkg -i "$tmpfile"
+sudo apt-get update && sudo apt-get install -y jq curl && json="$(curl -fsSL https://api.github.com/repos/xlionjuan/xlion-repo-archive-keyring/releases/latest)" && asset="$(echo "$json" | jq -r '.assets[] | select(.name | endswith(".deb")) | "\(.browser_download_url) \(.digest)"' | head -n1)" && url="${asset%% *}" && digest="${asset##* }" && [ -n "$url" ] && [ "$url" != "null" ] && [ -n "$digest" ] && [ "$digest" != "null" ] || { echo "ERROR: cannot locate .deb asset or SHA256 digest" >&2; return 1 2>/dev/null || false; } && tmpfile="$(mktemp /tmp/xlion-keyring-XXXXXX.deb)" && curl -fL "$url" -o "$tmpfile" || { echo "ERROR: download failed" >&2; return 1 2>/dev/null || false; } && expected="${digest#*:}" && actual="$(sha256sum "$tmpfile" | awk '{print $1}')" && [ "$actual" = "$expected" ] || { echo "ERROR: SHA256 mismatch" >&2; rm -f "$tmpfile"; return 1 2>/dev/null || false; } && sudo dpkg -i "$tmpfile" && rm -f "$tmpfile"
 ```
 
 ### Add apt source
