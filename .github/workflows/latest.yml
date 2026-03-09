@@ -107,7 +107,7 @@ jobs:
           env:
             WORKFOLDER: ${{ env.WORKFOLDER_RD }}
           run: |
-            mkdir ori
+            mkdir -p ori
             cp -r $WORKFOLDER/*.deb ./ori
 
         - name: Bootstrap repo info for rustdesk/rustdesk-server
@@ -128,7 +128,7 @@ jobs:
           env:
             WORKFOLDER: ${{ env.WORKFOLDER_RD_SERV }}
           run: |
-            mkdir ori
+            mkdir -p ori
             cp -r $WORKFOLDER/*.deb ./ori
 
         - name: Create rustdesk-server-meta
