@@ -124,6 +124,8 @@ jobs:
             cd $WORKFOLDER
             cat dl_urls.txt | grep '\.deb' | wget2 --input-file=-
 
+            xlion-repo-utils-gh --verify --workfolder $WORKFOLDER
+
         - name: Copy RustDesk Server to current folder
           env:
             WORKFOLDER: ${{ env.WORKFOLDER_RD_SERV }}
