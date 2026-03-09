@@ -51,10 +51,31 @@ jobs:
           with:
             persist-credentials: false
 
-        - name: Download Keyring
-          shell: bash
+        - name: Define workfolder for utils
           run: |
-            url=$(curl -s https://api.github.com/repos/xlionjuan/xlion-repo-archive-keyring/releases/latest | jq -r '.assets[] | select(.name | endswith(".deb")) | .browser_download_url') && tmpfile="$(basename "$url")" && curl -L "$url" -o "$tmpfile"
+            echo "WORKFOLDER_RD=$(mktemp -p /tmp -d xlion-repo.XXXXX)" >> "$GITHUB_ENV"
+            echo "WORKFOLDER_RD_SERV=$(mktemp -p /tmp -d xlion-repo.XXXXX)" >> "$GITHUB_ENV"
+            echo "WORKFOLDER_KEYRING=$(mktemp -p /tmp -d xlion-repo.XXXXX)" >> "$GITHUB_ENV"
+
+        - name: Bootstrap repo info for xlionjuan/xlion-repo-archive-keyring
+          env:
+            WORKFOLDER: ${{ env.WORKFOLDER_KEYRING }}
+          run: |
+            xlion-repo-utils-gh --workfolder $WORKFOLDER --repo xlionjuan/xlion-repo-archive-keyring
+
+        - name: Download keyring
+          env:
+            WORKFOLDER: ${{ env.WORKFOLDER_KEYRING }}
+          run: |
+            cd $WORKFOLDER
+            cat dl_urls.txt | wget2 --input-file=-
+            xlion-repo-utils-gh --verify --workfolder $WORKFOLDER
+
+        - name: Copy keyring to current folder
+          env:
+            WORKFOLDER: ${{ env.WORKFOLDER_KEYRING }}
+          run: |
+            cp -r $WORKFOLDER/*.deb .
 
         - name: Verify Keyring
           shell: bash
@@ -64,7 +85,43 @@ jobs:
             gh attestation verify --owner xlionjuan --predicate-type 'https://in-toto.io/attestation/release' xlion-repo-archive-keyring*
 
         - name: Download RustDesk
-          run: dpkg-deb --build rustdesk-server-meta rustdesk-server-meta.deb & bash rustdesk_latest.sh & bash rustdesk-server_latest.sh
+          env:
+            WORKFOLDER: ${{ env.WORKFOLDER_RD }}
+          run: |
+            set -euo pipefail
+            cd $WORKFOLDER
+            RUSTDESK_URL_AMD64=$(cat dl_urls.txt | grep '\.deb' | grep x86_64 | grep -v sciter)
+            RUSTDESK_URL_ARM64=$(cat dl_urls.txt | grep '\.deb' | grep aarch64 | grep -v sciter)
+            RUSTDESK_URL_ARMHF=$(cat dl_urls.txt | grep '\.deb' | grep armv7)
+
+            wget2 "$RUSTDESK_URL_AMD64" "$RUSTDESK_URL_ARM64" "$RUSTDESK_URL_ARMHF"
+
+            xlion-repo-utils-gh --verify --workfolder $WORKFOLDER
+
+        - name: Copy RustDesk to current folder
+          env:
+            WORKFOLDER: ${{ env.WORKFOLDER_RD }}
+          run: |
+            mkdir ori
+            cp -r $WORKFOLDER/*.deb ./ori
+
+        - name: Download RustDesk Server
+          env:
+            WORKFOLDER: ${{ env.WORKFOLDER_RD_SERV }}
+          run: |
+            set -euo pipefail
+            cd $WORKFOLDER
+            cat dl_urls.txt | grep '\.deb' | wget2 --input-file=-
+
+        - name: Copy RustDesk Server to current folder
+          env:
+            WORKFOLDER: ${{ env.WORKFOLDER_RD_SERV }}
+          run: |
+            mkdir ori
+            cp -r $WORKFOLDER/*.deb ./ori
+
+        - name: Create rustdesk-server-meta
+          run: dpkg-deb --build rustdesk-server-meta rustdesk-server-meta.deb
 
         - name: Repackage
           run: |
