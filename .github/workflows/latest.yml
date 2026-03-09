@@ -84,6 +84,11 @@ jobs:
           run: |
             gh attestation verify --owner xlionjuan --predicate-type 'https://in-toto.io/attestation/release' xlion-repo-archive-keyring*
 
+        - name: Bootstrap repo info for rustdesk/rustdesk
+          env:
+            WORKFOLDER: ${{ env.WORKFOLDER_RD }}
+          run: |
+            xlion-repo-utils-gh --workfolder $WORKFOLDER --repo rustdesk/rustdesk
         - name: Download RustDesk
           env:
             WORKFOLDER: ${{ env.WORKFOLDER_RD }}
@@ -104,6 +109,12 @@ jobs:
           run: |
             mkdir ori
             cp -r $WORKFOLDER/*.deb ./ori
+
+        - name: Bootstrap repo info for rustdesk/rustdesk-server
+          env:
+            WORKFOLDER: ${{ env.WORKFOLDER_RD_SERV }}
+          run: |
+            xlion-repo-utils-gh --workfolder $WORKFOLDER --repo rustdesk/rustdesk-server
 
         - name: Download RustDesk Server
           env:
