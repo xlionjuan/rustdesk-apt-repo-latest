@@ -64,7 +64,7 @@ sed -i 's/github/gitlab/g' /etc/apt/sources.list.d/xlion-rustdesk-repo.sources
 ```
 </details>
 
-## Install/Upgrade RustDesk/RustDesk Server
+## Install / Upgrade
 
 ### For RustDesk
 ```bash
