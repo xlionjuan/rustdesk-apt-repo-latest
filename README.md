@@ -27,10 +27,7 @@ This repo provides the following two architectures
 
 * `amd64`  (x86_64)
 * `arm64`  (aarch64)
-* `armhf`  (armv7)
-* `i386`   (x86_32) (Only on [RustDesk Server](https://github.com/rustdesk/rustdesk-server))
-
-And `armhf` only has sciter version.
+* `armhf`  (armv7, sciter version only)
 
 ## Update frequency
 
