@@ -9,13 +9,13 @@
 > You're viewing **latest** channel, [click me to check **Nightly** channel.](https://github.com/xlionjuan/rustdesk-apt-repo-nightly)
 
 > [!NOTE]  
-> This repo also contains [RustDesk Server suite](https://github.com/rustdesk/rustdesk-server) including hbbr, hbbs, utils, though I personality recommand to use [Docker 🐋 ](https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/ubuntu-server/docker/).
+> This repo also contains [RustDesk Server suite](https://github.com/rustdesk/rustdesk-server) including hbbr, hbbs, utils, though I personally recommend to use [Docker 🐋 ](https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/ubuntu-server/docker/).
 
 > [!NOTE]  
 > An [RPM](https://github.com/xlionjuan/rustdesk-rpm-repo) version is also available.
 
 > [!NOTE]  
-> Cloudflare R2 source is deprecated, but it will still available for some time.
+> Cloudflare R2 source is deprecated, but it will still be available for some time.
 
 This repo will use [aptly](https://github.com/aptly-dev/aptly) and [xlionjuan/fedora-createrepo-image](https://github.com/xlionjuan/fedora-createrepo-image) to create repo, and deploy to GitHub Pages.
 
@@ -23,22 +23,18 @@ The `.sh` script is written by ChatGPT, it will fetch the release data from GitH
 
 ## Architectures
 
-This repo provides the following architectures
+This repo provides the following three architectures
 
 * `amd64`  (x86_64)
 * `arm64`  (aarch64)
-* `armhf`  (armv7)
-* `i386`   (x86_32) (Only on [RustDesk Server](https://github.com/rustdesk/rustdesk-server))
-
-And `armhf` only has sciter version.
+* `armhf`  (armv7, desktop only, sciter version)
 
 ## Update frequency
 
-* Nightly: Every 3 AM UTC, because RustDesk's Nightly builds take a little over 2 hours.
-* latest: Every Saturday
+Every Saturday.
 
-## Add this repo
-### Add GPG key
+## Add Repository
+### Add GPG Key
 
 Please install [xlion-repo-archive-keyring](https://github.com/xlionjuan/xlion-repo-archive-keyring) package, you need to have `jq` and `curl` installed, this command will query GitHub API to get latest keyring package, verify its SHA256 and install it.
 
@@ -46,7 +42,7 @@ Please install [xlion-repo-archive-keyring](https://github.com/xlionjuan/xlion-r
 sudo apt-get update && sudo apt-get install -y jq curl && json="$(curl -fsSL https://api.github.com/repos/xlionjuan/xlion-repo-archive-keyring/releases/latest)" && asset="$(echo "$json" | jq -r '.assets[] | select(.name | endswith(".deb")) | "\(.browser_download_url) \(.digest)"' | head -n1)" && url="${asset%% *}" && digest="${asset##* }" && [ -n "$url" ] && [ "$url" != "null" ] && [ -n "$digest" ] && [ "$digest" != "null" ] || { echo "ERROR: cannot locate .deb asset or SHA256 digest" >&2; return 1 2>/dev/null || false; } && tmpfile="$(mktemp /tmp/xlion-keyring-XXXXXX.deb)" && curl -fL "$url" -o "$tmpfile" || { echo "ERROR: download failed" >&2; return 1 2>/dev/null || false; } && expected="${digest#*:}" && actual="$(sha256sum "$tmpfile" | awk '{print $1}')" && [ "$actual" = "$expected" ] || { echo "ERROR: SHA256 mismatch" >&2; rm -f "$tmpfile"; return 1 2>/dev/null || false; } && sudo dpkg -i "$tmpfile" && rm -f "$tmpfile"
 ```
 
-### Add apt source
+### Add Package Source
 
 `.sources` format is supported on all systems.
 
@@ -65,7 +61,7 @@ sed -i 's/github/gitlab/g' /etc/apt/sources.list.d/xlion-rustdesk-repo.sources
 ```
 </details>
 
-## Install/Upgrade RustDesk/RustDesk Server
+## Install / Upgrade
 
 ### For RustDesk
 ```bash
@@ -77,7 +73,7 @@ sudo apt update && sudo apt install rustdesk
 sudo apt update && sudo apt install rustdesk-server
 ```
 
-`rustdesk-server` is a metapackage that will install `rustdesk-server-hbbr`, `rustdesk-server-hbbs`, `rustdesk-server-utils` all in once!
+`rustdesk-server` is a metapackage that will install `rustdesk-server-hbbr`, `rustdesk-server-hbbs`, `rustdesk-server-utils` all at once!
 
 ## License
 
