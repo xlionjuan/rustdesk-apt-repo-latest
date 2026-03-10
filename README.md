@@ -9,13 +9,13 @@
 > You're viewing **latest** channel, [click me to check **Nightly** channel.](https://github.com/xlionjuan/rustdesk-apt-repo-nightly)
 
 > [!NOTE]  
-> This repo also contains [RustDesk Server suite](https://github.com/rustdesk/rustdesk-server) including hbbr, hbbs, utils, though I personality recommand to use [Docker 🐋 ](https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/ubuntu-server/docker/).
+> This repo also contains [RustDesk Server suite](https://github.com/rustdesk/rustdesk-server) including hbbr, hbbs, utils, though I personally recommend to use [Docker 🐋 ](https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/ubuntu-server/docker/).
 
 > [!NOTE]  
 > An [RPM](https://github.com/xlionjuan/rustdesk-rpm-repo) version is also available.
 
 > [!NOTE]  
-> Cloudflare R2 source is deprecated, but it will still available for some time.
+> Cloudflare R2 source is deprecated, but it will still be available for some time.
 
 This repo will use [aptly](https://github.com/aptly-dev/aptly) and [xlionjuan/fedora-createrepo-image](https://github.com/xlionjuan/fedora-createrepo-image) to create repo, and deploy to GitHub Pages.
 
