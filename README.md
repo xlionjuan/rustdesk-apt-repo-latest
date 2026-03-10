@@ -23,11 +23,11 @@ The `.sh` script is written by ChatGPT, it will fetch the release data from GitH
 
 ## Architectures
 
-This repo provides the following two architectures
+This repo provides the following three architectures
 
 * `amd64`  (x86_64)
 * `arm64`  (aarch64)
-* `armhf`  (armv7, sciter version only)
+* `armhf`  (armv7, desktop only, sciter version)
 
 ## Update frequency
 
