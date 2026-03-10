@@ -19,7 +19,7 @@
 
 This repo will use [aptly](https://github.com/aptly-dev/aptly) and [xlionjuan/fedora-createrepo-image](https://github.com/xlionjuan/fedora-createrepo-image) to create repo, and deploy to GitHub Pages.
 
-The `.sh` script is written by ChatGPT, it will fetch the release data from GitHub API and use [jq](https://github.com/jqlang/jq) to parse JSON data and find the asset URL.
+The download and verification logic is handled by [xlion-repo-utils-gh](https://github.com/xlionjuan/fedora-createrepo-image/tree/main/scripts), which fetches release data, downloads packages, and verifies SHA256 checksums.
 
 ## Architectures
 
