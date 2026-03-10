@@ -73,7 +73,7 @@ sudo apt update && sudo apt install rustdesk
 sudo apt update && sudo apt install rustdesk-server
 ```
 
-`rustdesk-server` is a metapackage that will install `rustdesk-server-hbbr`, `rustdesk-server-hbbs`, `rustdesk-server-utils` all in once!
+`rustdesk-server` is a metapackage that will install `rustdesk-server-hbbr`, `rustdesk-server-hbbs`, `rustdesk-server-utils` all at once!
 
 ## License
 
