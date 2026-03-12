@@ -39,6 +39,7 @@ jobs:
 
         - name: Verify
           run: |
+            set -euo pipefail
             cosign verify --rekor-url=https://rekor.sigstore.dev \
             --certificate-identity-regexp "https://github.com/xlionjuan/.*" \
             --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
@@ -57,6 +58,7 @@ jobs:
 
         - name: Define workfolder for utils
           run: |
+            set -euo pipefail
             echo "WORKFOLDER_RD=$(mktemp -p /tmp -d xlion-repo.XXXXX)" >> "$GITHUB_ENV"
             echo "WORKFOLDER_RD_SERV=$(mktemp -p /tmp -d xlion-repo.XXXXX)" >> "$GITHUB_ENV"
             echo "WORKFOLDER_KEYRING=$(mktemp -p /tmp -d xlion-repo.XXXXX)" >> "$GITHUB_ENV"
@@ -65,12 +67,14 @@ jobs:
           env:
             WORKFOLDER: ${{ env.WORKFOLDER_KEYRING }}
           run: |
+            set -euo pipefail
             xlion-repo-utils-gh --workfolder $WORKFOLDER --repo xlionjuan/xlion-repo-archive-keyring
 
         - name: Download keyring
           env:
             WORKFOLDER: ${{ env.WORKFOLDER_KEYRING }}
           run: |
+            set -euo pipefail
             cd $WORKFOLDER
             cat dl_urls.txt | wget2 --input-file=-
             xlion-repo-utils-gh --verify --workfolder $WORKFOLDER
@@ -79,6 +83,7 @@ jobs:
           env:
             WORKFOLDER: ${{ env.WORKFOLDER_KEYRING }}
           run: |
+            set -euo pipefail
             cp -r $WORKFOLDER/*.deb .
 
         - name: Verify Keyring
@@ -86,12 +91,14 @@ jobs:
           env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           run: |
+            set -euo pipefail
             gh attestation verify --owner xlionjuan --predicate-type 'https://in-toto.io/attestation/release' xlion-repo-archive-keyring*
 
         - name: Bootstrap repo info for rustdesk/rustdesk
           env:
             WORKFOLDER: ${{ env.WORKFOLDER_RD }}
           run: |
+            set -euo pipefail
             xlion-repo-utils-gh --workfolder $WORKFOLDER --repo rustdesk/rustdesk
         - name: Download RustDesk
           env:
@@ -111,6 +118,7 @@ jobs:
           env:
             WORKFOLDER: ${{ env.WORKFOLDER_RD }}
           run: |
+            set -euo pipefail
             mkdir -p ori
             cp -r $WORKFOLDER/*.deb ./ori
 
@@ -118,6 +126,7 @@ jobs:
           env:
             WORKFOLDER: ${{ env.WORKFOLDER_RD_SERV }}
           run: |
+            set -euo pipefail
             xlion-repo-utils-gh --workfolder $WORKFOLDER --repo rustdesk/rustdesk-server
 
         - name: Download RustDesk Server
@@ -134,6 +143,7 @@ jobs:
           env:
             WORKFOLDER: ${{ env.WORKFOLDER_RD_SERV }}
           run: |
+            set -euo pipefail
             mkdir -p ori
             cp -r $WORKFOLDER/*.deb ./ori
 
@@ -142,10 +152,12 @@ jobs:
 
         - name: Repackage
           run: |
+            set -euo pipefail
             bash repackage.sh
 
         - name: Initialize apt repository
           run: |
+            set -euo pipefail
             aptly repo create \
               -component=${{ env.COMPONENTS }} \
               -distribution=${{ env.DISTRIBUTION }} \
@@ -153,15 +165,18 @@ jobs:
             
         - name: Add .deb to apt repository
           run: |
+            set -euo pipefail
             aptly repo add repo-target .
 
         - name: Copy wwwroot to aptly public folder
           run: |
+            set -euo pipefail
             mkdir -p  $HOME/.aptly/public
             cp -r wwwroot/* $HOME/.aptly/public
 
         - name: Output summary
           run: |
+            set -euo pipefail
             echo "## Aptly repo summary" >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
             aptly repo show -with-packages repo-target >> "$GITHUB_STEP_SUMMARY"
@@ -217,6 +232,7 @@ jobs:
 
         - name: Publish apt repository
           run: |
+            set -euo pipefail
             aptly publish repo \
               -distribution=${{ env.DISTRIBUTION }} \
               -component=${{ env.COMPONENTS }} \
@@ -229,15 +245,18 @@ jobs:
         - name: Clean up
           if: always()
           run: |
+            set -euo pipefail
             rm -rf "$GNUPGHOME" || true
 
         - name: Ensure publish path has no '.'
           run: |
+            set -euo pipefail
             mkdir -p /tmp/public
             cp -r ~/.aptly/public/* /tmp/public
 
         - name: Output summary
           run: |
+            set -euo pipefail
             echo "## Final published folder structure" >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
             tree /tmp/public >> "$GITHUB_STEP_SUMMARY"
