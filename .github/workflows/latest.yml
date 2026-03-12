@@ -15,25 +15,25 @@ on:
     paths-ignore:
       - '**.md'
   workflow_dispatch:
-  
+
 env:
-    REPO_NAME: xlion-rustdesk-latest-apt-repo
-    CODENAME: main
-    COMPONENTS: main
-    DISTRIBUTION: main
+  REPO_NAME: xlion-rustdesk-latest-apt-repo
+  CODENAME: main
+  COMPONENTS: main
+  DISTRIBUTION: main
 
 permissions:
-    contents: read
+  contents: read
 
 defaults:
   run:
     shell: bash
 
 jobs:
-    verify:
-      name: Verify container
-      runs-on: ubuntu-24.04-arm
-      steps:
+  verify:
+    name: Verify container
+    runs-on: ubuntu-24.04-arm
+    steps:
         - name: Install Cosign
           uses: sigstore/cosign-installer@ba7bc0a3fef59531c69a25acd34668d6d3fe6f22 # v4.1.0
 
@@ -45,12 +45,12 @@ jobs:
             --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
             ghcr.io/xlionjuan/fedora-createrepo-image:latest
 
-    prepare:
-      runs-on: ubuntu-24.04-arm
-      name: Prepare
-      needs: verify
-      container: ghcr.io/xlionjuan/fedora-createrepo-image:latest
-      steps:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-24.04-arm
+    needs: verify
+    container: ghcr.io/xlionjuan/fedora-createrepo-image:latest
+    steps:
         - name: Checkout code
           uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
           with:
@@ -99,6 +99,7 @@ jobs:
           run: |
             set -euo pipefail
             xlion-repo-utils-gh --workfolder $WORKFOLDER --repo rustdesk/rustdesk
+
         - name: Download RustDesk
           env:
             WORKFOLDER: ${{ env.WORKFOLDER_RD }}
@@ -161,7 +162,7 @@ jobs:
               -component=${{ env.COMPONENTS }} \
               -distribution=${{ env.DISTRIBUTION }} \
               repo-target
-            
+
         - name: Add .deb to apt repository
           run: |
             set -euo pipefail
@@ -170,7 +171,7 @@ jobs:
         - name: Copy wwwroot to aptly public folder
           run: |
             set -euo pipefail
-            mkdir -p  $HOME/.aptly/public
+            mkdir -p $HOME/.aptly/public
             cp -r wwwroot/* $HOME/.aptly/public
 
         - name: Output summary
@@ -189,14 +190,13 @@ jobs:
             if-no-files-found: error
             include-hidden-files: true
 
-    publish:
-      name: Publish and sign repository
-      runs-on: ubuntu-24.04-arm
-      needs: prepare
-      container: ghcr.io/xlionjuan/fedora-createrepo-image:latest
-      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-
-      steps:
+  publish:
+    name: Publish and sign repository
+    runs-on: ubuntu-24.04-arm
+    needs: prepare
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    container: ghcr.io/xlionjuan/fedora-createrepo-image:latest
+    steps:
         - name: Download aptly workspace
           uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
           with:
@@ -272,36 +272,36 @@ jobs:
             path: /tmp/public
             if-no-files-found: error
 
-    deploy:
-      name: Deploy to GitHub Pages
-      if: github.event_name != 'pull_request'
-      environment:
-        name: github-pages
-        url: ${{ steps.deployment.outputs.page_url }}
-      runs-on: ubuntu-24.04-arm
-      needs: publish
-      permissions:
-        contents: read
-        pages: write
-        id-token: write
-      steps:
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04-arm
+    needs: publish
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
         - name: Deploy to GitHub Pages
           id: deployment
           uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
 
-    push-to-cf-r2:
-      name: Push to Cloudflare R2
-      if: github.event_name != 'pull_request'
-      runs-on: ubuntu-24.04-arm
-      needs: publish
-      steps:
+  push-to-cf-r2:
+    name: Push to Cloudflare R2
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04-arm
+    needs: publish
+    steps:
         - name: Download artifact
           uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
           with:
             pattern: cf_r2
             path: src-dir/latest
             merge-multiple: true
-    
+
         - name: Upload to Cloudflare R2
           uses: ryand56/r2-upload-action@47013c9cf0012876409579ed17399005aa287b48 # v1.3.4
           with:
