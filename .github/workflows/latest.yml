@@ -87,7 +87,6 @@ jobs:
             cp -r $WORKFOLDER/*.deb .
 
         - name: Verify Keyring
-          shell: bash
           env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           run: |
@@ -205,7 +204,6 @@ jobs:
             path: ~/.aptly
 
         - name: Prepare ephemeral GPG home
-          shell: bash
           run: |
             set -euo pipefail
             umask 077
@@ -213,7 +211,6 @@ jobs:
             echo "GPG_TTY=" >> "$GITHUB_ENV"
 
         - name: Import GPG Key
-          shell: bash
           run: |
             set -euo pipefail
             umask 077
