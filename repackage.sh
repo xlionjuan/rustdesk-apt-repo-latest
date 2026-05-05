@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Deprecated: the workflow now uses xlion-repo-repackage-deb from
+# ghcr.io/xlionjuan/fedora-createrepo-image. This file is kept for reference.
+
 set -oue pipefail
 
 CURRENT_DIR="$(pwd)"

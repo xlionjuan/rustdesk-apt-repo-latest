@@ -153,7 +153,11 @@ jobs:
         - name: Repackage
           run: |
             set -euo pipefail
-            bash repackage.sh
+            xlion-repo-repackage-deb \
+              --source-dir ori \
+              --target-dir . \
+              --deb-recommends xlion-repo-archive-keyring \
+              --remove-source-dir
 
         - name: Initialize apt repository
           run: |
