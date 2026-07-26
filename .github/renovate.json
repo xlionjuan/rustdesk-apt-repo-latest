@@ -1,17 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices"],
-  "enabledManagers": ["github-actions"],
+  "extends": ["local>xlionjuan/renovatebot-presets"],
   "packageRules": [
     {
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["pin", "digest", "pinDigest","major", "minor", "patch"],
-      "automerge": true,
-      "labels": ["dependencies"]
-    },
-    {
-      "matchUpdateTypes": ["pin", "digest", "pinDigest"],
-      "matchPackageNames": ["ghcr.io/xlionjuan/fedora-createrepo-image"],
+      "description": "Keep the Fedora CI image on latest",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["quay.io/fedora/fedora"],
+      "matchFileNames": [".gitlab-ci.yml"],
       "enabled": false
     }
   ]
