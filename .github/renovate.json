@@ -1,4 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>xlionjuan/renovatebot-presets"]
+  "extends": ["local>xlionjuan/renovatebot-presets"],
+  "packageRules": [
+    {
+      "description": "Keep the Fedora CI image on latest",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["quay.io/fedora/fedora"],
+      "matchFileNames": [".gitlab-ci.yml"],
+      "enabled": false
+    }
+  ]
 }
