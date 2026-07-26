@@ -1,18 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices"],
-  "enabledManagers": ["github-actions"],
-  "packageRules": [
-    {
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["pin", "digest", "pinDigest","major", "minor", "patch"],
-      "automerge": true,
-      "labels": ["dependencies"]
-    },
-    {
-      "matchUpdateTypes": ["pin", "digest", "pinDigest"],
-      "matchPackageNames": ["ghcr.io/xlionjuan/fedora-createrepo-image"],
-      "enabled": false
-    }
-  ]
+  "extends": ["local>xlionjuan/renovatebot-presets"]
 }
