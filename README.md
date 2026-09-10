@@ -1,3 +1,5 @@
+
+
 # rustdesk-apt-repo-latest
 
 [![Create Repo for RustDesk latest](https://github.com/xlionjuan/rustdesk-apt-repo-latest/actions/workflows/latest.yml/badge.svg)](https://github.com/xlionjuan/rustdesk-apt-repo-latest/actions/workflows/latest.yml)
@@ -31,7 +33,7 @@ This repo provides the following three architectures
 
 ## Update frequency
 
-Every Saturday.
+Every Saturday at 3:00 UTC.
 
 ## Add Repository
 ### Add GPG Key
