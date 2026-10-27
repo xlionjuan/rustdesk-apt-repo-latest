@@ -236,7 +236,12 @@ jobs:
           if: always()
           run: |
             set -euo pipefail
-            rm -rf "$GNUPGHOME" || true
+            if [[ -n "${GNUPGHOME:-}" ]]; then
+              rm -rf "$GNUPGHOME" || true
+            fi
+            if [[ -n "${SEQUOIA_HOME:-}" ]]; then
+              rm -rf "$SEQUOIA_HOME" || true
+            fi
 
         - name: Ensure publish path has no '.'
           run: |
