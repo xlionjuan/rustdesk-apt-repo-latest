@@ -115,7 +115,7 @@ jobs:
           run: |
             set -euo pipefail
             cd $WORKFOLDER
-            RUSTDESK_URL_AMD64=$(cat dl_urls.txt | grep '\.deb' | grep x86_64 | grep -v sciter)
+            RUSTDESK_URL_AMD64=$(cat dl_urls.txt | grep '\.deb' | grep x86_64 | grep -v sciter | grep -v rustdesk-unattended-wayland)
             RUSTDESK_URL_AMD64_WAYLAND=$(cat dl_urls.txt | grep '\.deb' | grep x86_64 | grep rustdesk-unattended-wayland)
             RUSTDESK_URL_ARM64=$(cat dl_urls.txt | grep '\.deb' | grep aarch64 | grep -v sciter)
             RUSTDESK_URL_ARMHF=$(cat dl_urls.txt | grep '\.deb' | grep armv7)
